@@ -1,0 +1,34 @@
+import os
+
+def get_dir_size(path, i):
+
+    # format path 
+    path = path.replace("\\","/")
+
+    # cut path i directories backwards if i > 0
+    if i > 0:  
+
+        def cut_path(path, i):
+            score = 0
+            for n in range(1,len(path)+1):
+                if path[-n] == '/':
+                    score += 1
+                    if score == i:
+                        return path[:-n]
+                else:
+                    pass
+
+        path = cut_path(path, i)
+
+    else:
+        pass
+
+    # compute size of resultant directory
+    total = 0
+    with os.scandir(path) as it:
+        for entry in it:
+            if entry.is_file():
+                total += entry.stat().st_size
+            elif entry.is_dir():
+                total += get_dir_size(entry.path)
+    return total
