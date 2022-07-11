@@ -5,23 +5,20 @@ def get_dir_size(path, i):
     # format path 
     path = path.replace("\\","/")
 
-    # cut path i directories backwards if i > 0
+    # define cut_path function
+    def cut_path(path, i):
+        score = 0
+        for n in range(1,len(path)+1):
+            if path[-n] == '/':
+                score += 1
+                if score == i:
+                    return path[:-n]
+            else:
+                pass
+
+    # if there is cut to be made, make cut
     if i > 0:  
-
-        def cut_path(path, i):
-            score = 0
-            for n in range(1,len(path)+1):
-                if path[-n] == '/':
-                    score += 1
-                    if score == i:
-                        return path[:-n]
-                else:
-                    pass
-
         path = cut_path(path, i)
-
-    else:
-        pass
 
     # compute size of resultant directory
     total = 0
