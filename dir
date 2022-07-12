@@ -1,31 +1,33 @@
-import os
+def path_back_size(path,i):
+    
+    import os
 
-def get_dir_size(path, i):
+    #def format_path(path):
+    #    path = path.replace(os.sep, '/')
+    #    return path
 
-    # format path 
-    path = path.replace("\\","/")
+    #path = format_path(path)
 
-    # define cut_path function
     def cut_path(path, i):
         score = 0
         for n in range(1,len(path)+1):
-            if path[-n] == '/':
+            if path[-n] == r'\':
                 score += 1
                 if score == i:
                     return path[:-n]
             else:
                 pass
 
-    # if there is cut to be made, make cut
-    if i > 0:  
-        path = cut_path(path, i)
-
-    # compute size of resultant directory
-    total = 0
-    with os.scandir(path) as it:
-        for entry in it:
+    if i > 0:
+        path = cut_path(path,i)        
+    
+    def path_size(path):
+        total = 0
+        for entry in os.scandir(path):
             if entry.is_file():
                 total += entry.stat().st_size
             elif entry.is_dir():
-                total += get_dir_size(entry.path)
-    return total
+                total += path_size(entry.path)
+        return total
+
+    return path_size(path)
