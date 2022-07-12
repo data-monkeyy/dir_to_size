@@ -11,7 +11,7 @@ def path_back_size(path,i):
     def cut_path(path, i):
         score = 0
         for n in range(1,len(path)+1):
-            if path[-n] == r'\':
+            if path[-n] == '\\':
                 score += 1
                 if score == i:
                     return path[:-n]
