@@ -1,26 +1,58 @@
-def path_back_size(path,i):
-    
+# functions arguments:
+# path: IMPORTANT: paths must be prefixed by the letter r. general format: r'my/file/path/prefixed/with/r'
+# steps: integer, how many directories back do you want to go? can be zero.
+# sep: how is the file path separated? takes values in ('b', 'bb', 'f'):
+#   sep = 'b' - path is separated by a single backslash
+#   sep = 'bb' - path is separated by a double backslash
+#   sep = 'f' - path is separated by a single forwardslash
+# units: takes values in ('B', 'KB', 'MB', 'GB', 'TB')
+
+
+def path_to_size(path,steps,sep,units):
+
     import os
 
-    #def format_path(path):
-    #    path = path.replace(os.sep, '/')
-    #    return path
-
-    #path = format_path(path)
-
-    def cut_path(path, i):
+    # execute if sep == 'b'
+    def cut_path1(path,steps):
         score = 0
         for n in range(1,len(path)+1):
             if path[-n] == '\\':
                 score += 1
-                if score == i:
+                if score == steps:
                     return path[:-n]
             else:
                 pass
 
-    if i > 0:
-        path = cut_path(path,i)        
-    
+    # execute if sep == 'bb'
+    def cut_path2(path,steps):
+        score = 0
+        for n in range(1,len(path)+1):
+            if path[-n] == '\\':
+                score += 1
+                if score == 2*steps:
+                    return path[:-n]
+            else:
+                pass
+
+    # execute if sep == 'f'
+    def cut_path3(path,steps):
+        score = 0
+        for n in range(1,len(path)+1):
+            if path[-n] == '/':
+                score += 1
+                if score == steps:
+                    return path[:-n]
+            else:
+                pass
+
+    if steps > 0:
+        if sep == 'b':
+            path = cut_path1(path,steps)    
+        elif sep == 'bb':
+            path = cut_path2(path,steps)
+        elif sep == 'f':
+            path = cut_path3(path,steps)
+
     def path_size(path):
         total = 0
         for entry in os.scandir(path):
@@ -30,4 +62,16 @@ def path_back_size(path,i):
                 total += path_size(entry.path)
         return total
 
-    return path_size(path)
+    # output
+    if units == 'B':
+        output = path_size(path)
+    elif units == 'KB':
+        output = int(path_size(path)/2**10)
+    elif units == 'MB':
+        output = int(path_size(path)/2**20)
+    elif units == 'GB':
+        output = int(path_size(path)/2**30)
+    elif units == 'TB':
+        output = int(path_size(path)/2**40)
+
+    return print(output)
